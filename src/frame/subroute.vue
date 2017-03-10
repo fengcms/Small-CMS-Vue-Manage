@@ -47,17 +47,17 @@ export default {
     }
   },
   created () {
-    // 组件创建完后获取数据，
-    // 此时 data 已经被 observed 了
-    // this.get_data()
-    // this.$api.get('article', null, r => {
-    //   console.log(r)
-    // })
+    this.getTest()
   },
   methods: {
     logout () {
-      this.$api.get('logout', this.dat, r => {
+      this.$api.get('logout', null, r => {
         this.$router.push('/login')
+      })
+    },
+    getTest () {
+      this.$api.get('article', null, r => {
+        //
       })
     }
   }
