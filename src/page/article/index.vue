@@ -11,17 +11,15 @@
       </div>
     </header>
     <section class="search">
-      <div class="item"><strong>标题：</strong><input class="input_text" type="text"></div>
+      <div class="item"><strong>标题：</strong><input v-model="param.title" class="input_text" type="text"></div>
       <div class="item">
         <strong>归属栏目：</strong>
-        <select class="input_select">
-          <option value="1">栏目1</option>
-          <option value="2">栏目2</option>
-          <option value="3">栏目3</option>
-          <option value="4">栏目4</option>
+        <select class="input_select" v-model="param.channel_id" placeholder="选择栏目">
+          <option value="">全部</option>
+          <option v-for="i in channel" :value="i.id" v-text="i.name"></option>
         </select>
       </div>
-      <div class="item"><input class="input_submit" value="搜索" type="button"></div>
+      <div class="item"><input @click="goSearch()" class="input_submit" value="搜索" type="button"></div>
     </section>
     <table class="table_list">
       <col width="50">
@@ -47,35 +45,39 @@
         </td>
       </tr>
     </table>
-    <div class="pagination">
-      <a href="#">首页</a>
-      <a href="#">上一页</a>
-      <a href="#" class="curr">1</a>
-      <a href="#">2</a>
-      <a href="#">3</a>
-      <a href="#">4</a>
-      <a href="#">5</a>
-      <a href="#">下一页</a>
-      <a href="#">末页</a>
-    </div>
+    <pagination :curr="param.page" :total="total" @returnPage="goPage"></pagination>
   </section>
 </template>
 <script>
 export default {
   data () {
     return {
-      list: []
+      list: [],
+      channel: [],
+      param: {
+        title: '',
+        channel_id: '',
+        page: 1
+      },
+      total: 1
     }
   },
   created () {
     // 组件创建完后获取数据，
     this.getData()
+    this.getChannel()
   },
   methods: {
-    getData (param) {
-      if (!param) param = {}
-      this.$api.get('article', param, r => {
+    getData () {
+      this.$api.get('article', this.param, r => {
         this.list = r.data.list
+        this.total = r.data.total
+      })
+    },
+    getChannel () {
+      // 获取栏目列表
+      this.$api.get('channel', null, r => {
+        this.channel = r.data.list
       })
     },
     delArticle (id) {
@@ -84,6 +86,14 @@ export default {
           this.getData()
         })
       }
+    },
+    goPage (e) {
+      this.param.page = e
+      this.getData()
+    },
+    goSearch () {
+      this.param.page = 1
+      this.getData()
     }
   }
 }

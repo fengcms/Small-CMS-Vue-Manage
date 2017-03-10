@@ -32,13 +32,18 @@
         </td>
       </tr>
     </table>
+    <pagination :curr="param.page" :total="total" @returnPage="goPage"></pagination>
   </section>
 </template>
 <script>
 export default {
   data () {
     return {
-      list: []
+      list: [],
+      param: {
+        page: 1
+      },
+      total: 1
     }
   },
   created () {
@@ -46,10 +51,10 @@ export default {
     this.getData()
   },
   methods: {
-    getData (param) {
-      if (!param) param = {}
-      this.$api.get('channel', param, r => {
+    getData () {
+      this.$api.get('channel', this.param, r => {
         this.list = r.data.list
+        this.total = r.data.total
       })
     },
     delChannel (id) {
@@ -58,6 +63,10 @@ export default {
           this.getData()
         })
       }
+    },
+    goPage (e) {
+      this.param.page = e
+      this.getData()
     }
   }
 }

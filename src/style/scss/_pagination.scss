@@ -10,5 +10,8 @@
     &.curr {
       border: 1px solid $blue;background: $blue;color: $cff;
     }
+    &.disable {
+      color: $gray;background: $elgray;cursor: not-allowed;
+    }
   }
 }

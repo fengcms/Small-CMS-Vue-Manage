@@ -23,7 +23,7 @@
         <th>归属栏目</th>
         <td>
           <select class="input_select w150" v-model="dat.channel_id">
-            <option v-for="i in channel" :value="i.id" v-text="i.name">栏目1</option>
+            <option v-for="i in channel" :value="i.id" v-text="i.name"></option>
           </select>
         </td>
       </tr>
@@ -42,7 +42,8 @@
       <tr>
         <th>文章内容</th>
         <td>
-          <textarea class="input_textarea" v-model="dat.content"></textarea>
+          <quill-editor ref="myTextEditor" :config="editor" v-model="dat.content"></quill-editor>
+          <!-- <textarea class="input_textarea" id="content" v-model="dat.content"></textarea> -->
         </td>
       </tr>
       <tr>
@@ -60,28 +61,33 @@ export default {
     return {
       id: this.$route.params.id,
       dat: {},
-      channel: []
+      channel: [],
+      editor: {
+        height: '350px'
+      }
     }
   },
   created () {
     // 组件创建完后获取数据，
-    if (this.id) {
-      this.getData()
-    }
     this.getChannel()
   },
   methods: {
-    getData (params) {
-      if (!params) params = {}
-      this.$api.get('article/' + this.id, params, r => {
+    getData () {
+      // 获取文章信息
+      this.$api.get('article/' + this.id, null, r => {
         this.dat = r.data
       })
     },
     getChannel () {
+      // 获取栏目列表
       this.$api.get('channel', null, r => {
         this.channel = r.data.list
+        // 根据路由是否包含ID来判断是否是添加文章，是添加，就默认显示第一个栏目
         if (!this.id) {
-          this.dat.channel_id = r.data.list[0].id
+          this.dat.channel_id = this.channel[0].id
+        } else {
+          // 否则，就去获取文章信息
+          this.getData()
         }
       })
     },
@@ -101,3 +107,17 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+  .ql-toolbar {
+    background: #EFF2F7;border-radius: 5px 5px 0 0;
+  }
+  .ql-container {
+    border-radius: 0 0 5px 5px;overflow: hidden;
+    .ql-editor {
+      min-height: 20em;
+      padding-bottom: 1em;
+      max-height: 25em;
+      background: #fff;
+    }
+  }
+</style>

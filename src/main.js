@@ -19,7 +19,13 @@ Vue.prototype.$utils = utils
 // 全局组件
 
 import UpLoad from './components/upload.vue'
+import Pagination from './components/pagination.vue'
 Vue.component('up-load', UpLoad)
+Vue.component('pagination', Pagination)
+
+// 引用和使用编辑器
+import VueQuillEditor from 'vue-quill-editor'
+Vue.use(VueQuillEditor)
 
 // 使用配置文件规则
 const router = new VueRouter({
