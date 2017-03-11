@@ -1,5 +1,6 @@
 // 配置API接口地址
 // var root = 'http://fengcss.com:53000/api/v1'
+// var root = 'http://192.168.12.105:8080/news_system'
 var root = process.env.API_ADDR
 // 引用superagent
 var request = require('superagent')
