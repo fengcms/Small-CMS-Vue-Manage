@@ -44,6 +44,7 @@ function apiBase (method, url, params, success, failure) {
     }
   }
   r.end(function (err, res) {
+    console.log(res)
     if (err) {
       if (res.status === 401) {
         window.location.href = '#/login'

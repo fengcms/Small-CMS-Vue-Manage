@@ -24,8 +24,11 @@ Vue.component('up-load', UpLoad)
 Vue.component('pagination', Pagination)
 
 // 引用和使用编辑器
-import VueQuillEditor from 'vue-quill-editor'
-Vue.use(VueQuillEditor)
+// import VueQuillEditor from 'vue-quill-editor'
+// Vue.use(VueQuillEditor)
+
+import VueHtml5Editor from 'vue-html5-editor'
+Vue.use(VueHtml5Editor)
 
 // 使用配置文件规则
 const router = new VueRouter({

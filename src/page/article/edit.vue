@@ -42,8 +42,7 @@
       <tr>
         <th>文章内容</th>
         <td>
-          <quill-editor ref="myTextEditor" :config="editor" v-model="dat.content"></quill-editor>
-          <!-- <textarea class="input_textarea" id="content" v-model="dat.content"></textarea> -->
+          <vue-html5-editor :content="dat.content" :height="300" @change="updateData"></vue-html5-editor>
         </td>
       </tr>
       <tr>
@@ -91,6 +90,9 @@ export default {
         }
       })
     },
+    updateData (data) {
+      this.dat.content = data
+    },
     goSubmit () {
       if (this.id) {
         this.$api.put('article/' + this.id, this.dat, r => {
@@ -107,17 +109,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .ql-toolbar {
-    background: #EFF2F7;border-radius: 5px 5px 0 0;
-  }
-  .ql-container {
-    border-radius: 0 0 5px 5px;overflow: hidden;
-    .ql-editor {
-      min-height: 20em;
-      padding-bottom: 1em;
-      max-height: 25em;
-      background: #fff;
-    }
-  }
-</style>
