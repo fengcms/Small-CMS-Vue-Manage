@@ -49,6 +49,7 @@ export default {
     getData (param) {
       if (!param) param = {}
       this.$api.get('manage', param, r => {
+        console.log(r)
         this.list = r.data.list
       })
     },
