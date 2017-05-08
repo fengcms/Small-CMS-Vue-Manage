@@ -14,7 +14,7 @@
       <div class="item"><strong>标题：</strong><input v-model="param.title" class="input_text" type="text"></div>
       <div class="item">
         <strong>归属栏目：</strong>
-        <select class="input_select" v-model="param.channel_id" placeholder="选择栏目">
+        <select class="input_select" v-model="channel_id" placeholder="选择栏目">
           <option value="">全部</option>
           <option v-for="i in channel" :value="i.id" v-text="i.name"></option>
         </select>
@@ -37,7 +37,7 @@
       <tr v-for="i in list">
         <td v-text="i.id">1</td>
         <td class="tl" v-text="i.title">今天天气真心不错1</td>
-        <td v-text="i.channel.name">最新资讯</td>
+        <td v-text="i.channel_name">最新资讯</td>
         <td v-text="$utils.formatDate(i.time)">2017-03-02</td>
         <td class="control">
           <router-link class="btn edit mini" :to="'/article/edit/'+i.id">编辑</router-link>
@@ -54,6 +54,7 @@ export default {
     return {
       list: [],
       channel: [],
+      channel_id: '',
       param: {
         title: '',
         channel_id: '',
@@ -66,6 +67,11 @@ export default {
     // 组件创建完后获取数据，
     this.getData()
     this.getChannel()
+  },
+  watch: {
+    channel_id: function () {
+      this.param.channel_id = this.channel_id
+    }
   },
   methods: {
     getData () {

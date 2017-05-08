@@ -1,8 +1,8 @@
 // 配置API接口地址
 // var root = 'http://fengcss.com:53000/api/v1'
 // var root = 'http://192.168.12.105:8080/news_system'
-var root = 'http://122.114.44.204:8080/news_system_cms'
-// var root = process.env.API_ADDR
+// var root = 'http://122.114.44.204:8080/news_system_cms'
+var root = process.env.API_ADDR
 // 引用superagent
 var request = require('superagent')
 // 自定义判断元素类型JS

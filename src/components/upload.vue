@@ -40,7 +40,7 @@ export default {
         if (xhr.status === 200) {
           let r = JSON.parse(this.responseText)
           if (r.code === 0) {
-            v.imgUrl = r.data
+            v.imgUrl = r.data.url
             v.$emit('input', v.imgUrl)
             v.progress = null
           } else {
