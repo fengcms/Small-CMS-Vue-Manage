@@ -1,10 +1,7 @@
 // 配置API接口地址
-// var root = 'http://fengcss.com:53000/api/v1'
-// var root = 'http://192.168.12.105:8080/news_system'
-// var root = 'http://122.114.44.204:8080/news_system_cms'
 var root = process.env.API_ADDR
-// 引用superagent
-var request = require('superagent')
+// 引用axios
+var axios = require('axios')
 // 自定义判断元素类型JS
 function toType (obj) {
   return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
@@ -17,9 +14,10 @@ function filterNull (o) {
     }
     if (toType(o[key]) === 'string') {
       o[key] = o[key].trim()
-      if (o[key].length === 0) {
-        delete o[key]
-      }
+    } else if (toType(o[key]) === 'object') {
+      o[key] = filterNull(o[key])
+    } else if (toType(o[key]) === 'array') {
+      o[key] = filterNull(o[key])
     }
   }
   return o
@@ -31,21 +29,34 @@ function filterNull (o) {
   需要根据接口的参数进行调整。参考说明文档地址：
   https://cnodejs.org/topic/5378720ed6e2d16149fa16bd
 */
-function apiBase (method, url, params, success, failure) {
-  var r = request(method, url).type('text/plain').withCredentials()
+
+function apiAxios (method, url, params, success, failure) {
   if (params) {
     params = filterNull(params)
-    if (method === 'POST' || method === 'PUT') {
-      if (toType(params) === 'object') {
-        params = JSON.stringify(params)
-      }
-      r = r.send(params)
-    } else if (method === 'GET' || method === 'DELETE') {
-      r = r.query(params)
-    }
   }
-  r.end(function (err, res) {
-    console.log(res)
+  axios({
+    method: method,
+    url: url,
+    data: method === 'POST' || method === 'PUT' ? params : null,
+    params: method === 'GET' || method === 'DELETE' ? params : null,
+    baseURL: root,
+    withCredentials: true
+  })
+  .then(function (res) {
+    if (res.data.code === 0) {
+      if (success) {
+        success(res.data)
+      }
+    } else {
+      if (failure) {
+        failure(res.data)
+      } else {
+        window.alert('提示: ' + JSON.stringify(res.body.msg))
+      }
+    }
+  })
+  .catch(function (err) {
+    let res = err.response
     if (err) {
       if (res.status === 401) {
         window.location.href = '#/login'
@@ -53,32 +64,22 @@ function apiBase (method, url, params, success, failure) {
         window.alert('api error, HTTP CODE: ' + res.status)
         return
       }
-    };
-    if (res.body.code === 0) {
-      if (success) {
-        success(res.body)
-      }
-    } else {
-      if (failure) {
-        failure(res.body)
-      } else {
-        window.alert('提示: ' + JSON.stringify(res.body.msg))
-      }
     }
   })
 }
+
 // 返回在vue模板中的调用接口
 export default {
   get: function (url, params, success, failure) {
-    return apiBase('GET', root + '/' + url, params, success, failure)
+    return apiAxios('GET', url, params, success, failure)
   },
   post: function (url, params, success, failure) {
-    return apiBase('POST', root + '/' + url, params, success, failure)
+    return apiAxios('POST', url, params, success, failure)
   },
   put: function (url, params, success, failure) {
-    return apiBase('PUT', root + '/' + url, params, success, failure)
+    return apiAxios('PUT', url, params, success, failure)
   },
   delete: function (url, params, success, failure) {
-    return apiBase('DELETE', root + '/' + url, params, success, failure)
+    return apiAxios('DELETE', url, params, success, failure)
   }
 }
